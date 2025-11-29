@@ -1,0 +1,15 @@
+.form {
+    max-width: 450px;
+    margin: 200px auto 50px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    padding: 20px;
+    font-family: "Roboto", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 380;
+    font-style: normal;
+    font-variation-settings:
+    "wdth" 380; 
+}

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Lora:wght@400..700&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Lora:wght@400..700&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wdth,wght@0,75..100,100..900;1,75..100,100..900&display=swap" rel="stylesheet">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/login.css">
+    <title>Login Page</title>
+    <style>
+        body {
+            background-color: #FFFEFC;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 800 800'%3E%3Cg %3E%3Ccircle fill='%23FFFEFC' cx='400' cy='400' r='600'/%3E%3Ccircle fill='%23fcf8ee' cx='400' cy='400' r='500'/%3E%3Ccircle fill='%23f9f2e1' cx='400' cy='400' r='400'/%3E%3Ccircle fill='%23f4edd3' cx='400' cy='400' r='300'/%3E%3Ccircle fill='%23efe8c6' cx='400' cy='400' r='200'/%3E%3Ccircle fill='%23E9E3B9' cx='400' cy='400' r='100'/%3E%3C/g%3E%3C/svg%3E");
+            background-attachment: fixed;
+            background-size: cover;
+        }
+    </style>
+</head>
+<body>
+    <section class="form">
+        <div style="text-align: center;">
+            <img src="images/logo.png" width="100px" height="100px">
+            <h2 style="margin-bottom: 25px;">Do or Cry</h2>
+        </div>
+        <div>
+            <input type="text" id="username" placeholder="Username" required style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"></input>
+        </div>
+        <div>
+            <input type="button" id="loginbtn" value="Login" style="width: 100%; padding: 12px; background-color: #A51C30; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-top: 10px;"></input>
+        </div>
+    </section>
+    <script>
+            document.getElementById("loginbtn").addEventListener("click", function() {
+                let username = document.getElementById("username").value;
+
+                localStorage.setItem("username", username);
+
+                window.location.href = "index.html";
+            });
+        </script>
+</body>
+</html>
