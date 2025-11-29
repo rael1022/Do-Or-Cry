@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <title>LoopLearn Pomodoro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .cover{
+        margin: 25px auto;
+        max-width: 400px;
+    }
+    .container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 30px 40px;
+        background: #ffffff;
+        border-radius: 14px;
+        box-shadow: 0 3px 20px rgba(0,0,0,0.06);
+    }
+    h2 {
+        font-size: 26px;
+        font-weight: 600;
+    }
+    input[type=number] {
+        text-align: center;
+    }
+    .progress-container {
+      width: 100%;
+      height: 10px;
+      background-color: #d1d5db; /* gray-300 */
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background-color: #6366f1; /* indigo-500 */
+      border-radius: 5px;
+      transition: width 0.5s linear;
+    }
+  </style>
+</head>
+<body class="bg-[#F5F5F7] dark:bg-[#121212] text-gray-900 dark:text-gray-100">
+
+<!-- Navigation Bar -->
+<nav class="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-[#1A1A1A] border-b border-gray-200 dark:border-gray-700">
+  <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+    <div class="text-xl font-extrabold tracking-wide bg-gradient-to-r from-indigo-500 to-purple-500 
+                bg-clip-text text-transparent transition duration-300 transform hover:scale-105 hover:from-pink-500 hover:to-yellow-500">
+      Do or Cry
+    </div>
+    <div class="flex items-center space-x-6">
+      <a href="home.html" class="font-medium transition duration-300 bg-gradient-to-r from-gray-800 to-gray-800 bg-clip-text text-transparent 
+                dark:from-gray-200 dark:to-gray-200 hover:from-indigo-500 hover:to-purple-500">Home</a>
+      <a href="dashboard.html" class="font-medium transition duration-300 bg-gradient-to-r from-gray-800 to-gray-800 bg-clip-text text-transparent 
+                dark:from-gray-200 dark:to-gray-200 hover:from-indigo-500 hover:to-purple-500">Dashboard</a>
+      <a href="tools.html" class="font-medium transition duration-300 bg-gradient-to-r from-gray-800 to-gray-800 bg-clip-text text-transparent 
+                dark:from-gray-200 dark:to-gray-200 hover:from-indigo-500 hover:to-purple-500">Tools</a>
+      <button onclick="toggleTheme()" class="p-2 rounded-full bg-gradient-to-r from-purple-600 to-blue-500
+               text-white dark:text-black transition duration-500 transform hover:scale-125 hover:rotate-180 hover:shadow-[0_0_12px_rgba(139,92,246,0.6)]">
+        <span class="dark:hidden">🌙</span>
+        <span class="hidden dark:inline">☀️</span>
+      </button>
+    </div>
+  </div>
+</nav>
+<div class="h-16"></div>
+
+<!-- Main Content -->
+<div class="cover">
+  <div class="container text-center">
+    <h2 class="mb-6 text-3xl font-bold">Pomodoro Timer</h2>
+    <p class="text-lg mb-4">Welcome, <span id="username">Teio</span>!</p>
+
+    <!-- 自定义时间输入 -->
+    <div class="flex justify-center gap-2 mb-4">
+      <input id="StudyTime" type="number" placeholder="Study min" class="px-1 py-1 border rounded w-24">
+      <input id="breakTime" type="number" placeholder="Break min" class="px-1 py-1 border rounded w-24">
+      <button id="setTimeBtn" class="px-4 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition">Set</button>
+    </div>
+
+    <!-- 当前模式显示 -->
+    <div class="mb-2 text-xl font-semibold" id="modeDisplay">Mode: Study</div>
+
+    <!-- Timer Display -->
+    <div id="timer" class="text-5xl font-mono mb-2">25:00</div>
+
+    <!-- 进度条 -->
+    <div class="progress-container">
+      <div id="progressBar" class="progress-bar"></div>
+    </div>
+
+    <!-- Control Buttons -->
+    <div class="flex justify-center gap-4 mb-4">
+      <button id="startBtn" class="px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 transition">Start</button>
+      <button id="pauseBtn" class="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition">Pause</button>
+      <button id="resetBtn" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition">Reset</button>
+    </div>
+
+    <p class="text-lg">Completed Pomodoros: <span id="pomodoroCount">0</span></p>
+  </div>
+</div>
+
+<audio id="bellSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+
+<script>
+  // Light/Dark toggle
+  function toggleTheme() {
+    document.documentElement.classList.toggle('dark');
+  }
+
+  // 用户名
+  const username = localStorage.getItem("username") || "User";
+  document.getElementById("username").innerText = username;
+
+  const pomodoroKey = `pomodoro_${username}`;
+  const modeKey = `pomodoro_${username}_mode`;
+
+  let totalTime = 25 * 60;
+  let breakTime = 5 * 60;
+  let timeLeft = totalTime;
+  let timerInterval = null;
+  let onBreak = localStorage.getItem(modeKey) === 'break';
+  let running = false;
+
+  const modeDisplay = document.getElementById('modeDisplay');
+  const timerDisplay = document.getElementById('timer');
+  const progressBar = document.getElementById('progressBar');
+
+  // 完成次数
+  let completed = Number(localStorage.getItem(pomodoroKey) || 0);
+  document.getElementById('pomodoroCount').innerText = completed;
+
+  function updateModeDisplay() {
+    modeDisplay.innerText = `Mode: ${onBreak ? 'Break' : 'Study'}`;
+  }
+
+  function updateProgressBar() {
+    const total = onBreak ? breakTime : totalTime;
+    const percent = ((total - timeLeft) / total) * 100;
+    progressBar.style.width = percent + '%';
+    progressBar.style.backgroundColor = onBreak ? '#10b981' : '#6366f1'; // Break: green, Study: indigo
+  }
+
+  function updateTimerDisplay() {
+    const minutes = Math.floor(timeLeft / 60).toString().padStart(2,'0');
+    const seconds = (timeLeft % 60).toString().padStart(2,'0');
+    const icon = running ? '⏱️' : '⏸️';
+    timerDisplay.innerText = `${icon} ${minutes}:${seconds}`;
+    updateModeDisplay();
+    updateProgressBar();
+  }
+
+  function playSound() {
+    document.getElementById('bellSound').play();
+  }
+
+  function switchMode() {
+    onBreak = !onBreak;
+    timeLeft = onBreak ? breakTime : totalTime;
+    localStorage.setItem(modeKey, onBreak ? 'break' : 'study');
+    playSound();
+    updateTimerDisplay();
+    alert(onBreak ? "Break Time! ☕" : "Study Time! 💪");
+  }
+
+function triggerPomodoroCompleted() {
+  const todayKey = `todoPomodoro_${username}_${new Date().toISOString().slice(0,10)}`;
+  let todayCount = Number(localStorage.getItem(todayKey) || 0);
+  todayCount++;
+  localStorage.setItem(todayKey, todayCount);
+
+  // 同时更新总数
+  localStorage.setItem(pomodoroKey, completed);
+}
+
+
+  // Start timer
+  document.getElementById('startBtn').addEventListener('click', () => {
+    if(timerInterval) return;
+    running = true;
+    updateTimerDisplay();
+    timerInterval = setInterval(() => {
+      if(timeLeft > 0) {
+        timeLeft--;
+        updateTimerDisplay();
+      } else {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        running = false;
+        if(!onBreak) {
+          completed++;
+          localStorage.setItem(pomodoroKey, completed);
+          document.getElementById('pomodoroCount').innerText = completed;
+          triggerPomodoroCompleted();
+        }
+        switchMode();
+        running = true;
+        timerInterval = setInterval(arguments.callee, 1000);
+      }
+    }, 1000);
+  });
+
+  // Pause
+  document.getElementById('pauseBtn').addEventListener('click', () => {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    running = false;
+    updateTimerDisplay();
+  });
+
+  // Reset
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    running = false;
+    timeLeft = onBreak ? breakTime : totalTime;
+    updateTimerDisplay();
+  });
+
+  // Set custom times
+  document.getElementById('setTimeBtn').addEventListener('click', () => {
+    const Study = Number(document.getElementById('StudyTime').value);
+    const brk = Number(document.getElementById('breakTime').value);
+    if(Study > 0) totalTime = Study * 60;
+    if(brk > 0) breakTime = brk * 60;
+    timeLeft = onBreak ? breakTime : totalTime;
+    updateTimerDisplay();
+    alert(`Study: ${Study>0?Study:totalTime/60} min, Break: ${brk>0?brk:breakTime/60} min`);
+  });
+
+  // 监听事件示例
+  window.addEventListener('pomodoro_completed', (e) => {
+    console.log('Pomodoro completed event triggered:', e.detail);
+    // 可在这里更新 Dashboard 或发送数据
+  });
+
+  updateTimerDisplay();
+</script>
+
+</body>
+</html>
