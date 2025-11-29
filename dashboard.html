@@ -24,7 +24,6 @@
 </head>
 <body class="bg-[#F5F5F7] dark:bg-[#121212] text-gray-900 dark:text-gray-100">
 
-<!-- Navigation Bar -->
 <nav class="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-[#1A1A1A] border-b border-gray-200 dark:border-gray-700">
   <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
     <div class="text-xl font-extrabold tracking-wide bg-gradient-to-r from-indigo-500 to-purple-500 
@@ -49,54 +48,38 @@
 
 <div class="h-16"></div>
 
-<!-- Main Content -->
 <div class="cover">
   <div class="container">
     <h2 class="mb-6 text-3xl font-bold text-center">Dashboard 📊</h2>
 
-    <!-- 学习进度 -->
     <div class="mb-6">
-      <h3 class="text-xl font-semibold mb-2">学习进度</h3>
+      <h3 class="text-xl font-semibold mb-2">Study Progress</h3>
       <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-6">
         <div id="studyProgressBar" class="bg-indigo-500 h-6 rounded-full text-white text-center">0%</div>
       </div>
     </div>
 
-    <!-- Test 成绩 -->
-    <div class="mb-6">
-      <h3 class="text-xl font-semibold mb-2">Test 成绩</h3>
-      <div class="grid grid-cols-2 gap-4">
-        <div class="p-4 bg-gray-100 dark:bg-gray-800 rounded shadow">
-          <p>数学: <span id="scoreMath">0</span>/100</p>
+    <div class="container">
+        <h1>📊 Your Quiz History</h1>
+        <div class="history-section" id="dashboardHistorySection">
+            <div id="dashboardHistoryList"></div>
         </div>
-        <div class="p-4 bg-gray-100 dark:bg-gray-800 rounded shadow">
-          <p>英语: <span id="scoreEng">0</span>/100</p>
-        </div>
-        <div class="p-4 bg-gray-100 dark:bg-gray-800 rounded shadow">
-          <p>科学: <span id="scoreSci">0</span>/100</p>
-        </div>
-        <div class="p-4 bg-gray-100 dark:bg-gray-800 rounded shadow">
-          <p>历史: <span id="scoreHist">0</span>/100</p>
-        </div>
-      </div>
     </div>
 
-    <!-- 拖延症人格类型 -->
     <div class="mb-6">
-      <h3 class="text-xl font-semibold mb-2">拖延症人格类型</h3>
-      <p id="procrastType" class="p-4 bg-yellow-100 dark:bg-yellow-800 rounded shadow text-center text-lg font-medium">未知</p>
+      <h3 class="text-xl font-semibold mb-2">Procrastination Type</h3>
+      <p id="procrastType" class="p-4 bg-yellow-100 dark:bg-yellow-800 rounded shadow text-center text-lg font-medium">Unknown</p>
     </div>
 
-    <!-- 工具统计 -->
     <div class="mb-6">
-      <h3 class="text-xl font-semibold mb-2">工具统计</h3>
+      <h3 class="text-xl font-semibold mb-2">Tools Statistics</h3>
       <div class="grid grid-cols-2 gap-4">
         <div class="p-4 bg-green-100 dark:bg-green-800 rounded shadow text-center">
-          <p>今天完成番茄钟次数</p>
+          <p>Pomodoros Completed Today</p>
           <span id="pomodoroCount" class="text-2xl font-bold">0</span>
         </div>
         <div class="p-4 bg-blue-100 dark:bg-blue-800 rounded shadow text-center">
-          <p>今天完成 To-do 数量</p>
+          <p>To-dos Completed Today</p>
           <span id="todoDoneToday" class="text-2xl font-bold">0</span>
         </div>
       </div>
@@ -107,38 +90,53 @@
 <script>
 window.addEventListener('DOMContentLoaded', () => {
   const username = localStorage.getItem("username") || "User";
-
-  // 今天日期
   const today = new Date().toISOString().slice(0,10);
 
-  // 读取今天完成番茄钟次数
-  const todayKey = `todoPomodoro_${username}_${today}`;
-  const pomodoroToday = Number(localStorage.getItem(todayKey) || 0);
-  document.getElementById('pomodoroCount').innerText = pomodoroToday;
+  const pomodoroKey = `todoPomodoro_${username}_${today}`;
+  document.getElementById('pomodoroCount').innerText = Number(localStorage.getItem(pomodoroKey) || 0);
 
-  // 读取今天完成 To-do 数量
   const todoKey = `todoDone_${username}_${today}`;
-  const todoDoneToday = Number(localStorage.getItem(todoKey) || 0);
-  document.getElementById('todoDoneToday').innerText = todoDoneToday;
+  document.getElementById('todoDoneToday').innerText = Number(localStorage.getItem(todoKey) || 0);
 
-  // 其他信息
   const studyProgress = Number(localStorage.getItem('studyProgress') || 65);
-  const scores = {
-    math: Number(localStorage.getItem('scoreMath') || 80),
-    eng: Number(localStorage.getItem('scoreEng') || 0),
-    sci: Number(localStorage.getItem('scoreSci') || 0),
-    hist: Number(localStorage.getItem('scoreHist') || 0)
-  };
-  const procrastType = localStorage.getItem('procrastType') || '中度拖延型';
+
+  const procrastType = localStorage.getItem('procrastType') || 'Moderate Procrastinator';
 
   document.getElementById('studyProgressBar').style.width = studyProgress + '%';
   document.getElementById('studyProgressBar').innerText = studyProgress + '%';
-  document.getElementById('scoreMath').innerText = scores.math;
-  document.getElementById('scoreEng').innerText = scores.eng;
-  document.getElementById('scoreSci').innerText = scores.sci;
-  document.getElementById('scoreHist').innerText = scores.hist;
   document.getElementById('procrastType').innerText = procrastType;
 });
+
+function displayDashboardHistory() {
+    const history = JSON.parse(localStorage.getItem('testHistory') || '[]');
+    const historyList = document.getElementById('dashboardHistoryList');
+    
+    if (history.length === 0) {
+        historyList.innerHTML = '<p style="text-align: center; color: #999;">No quiz history yet</p>';
+        return;
+    }
+    
+    historyList.innerHTML = '';
+    history.forEach(record => {
+        const div = document.createElement('div');
+        div.className = 'history-item';
+        div.innerHTML = `
+            <div>
+                <div class="history-date">${record.date}</div>
+                <div style="font-size: 14px; color: #666; margin-top: 4px;">
+                    ${record.correct}/${record.total} correct
+                </div>
+            </div>
+            <div class="history-score">${record.score}%</div>
+        `;
+        historyList.appendChild(div);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    displayDashboardHistory();
+});
+
 
 </script>
 
