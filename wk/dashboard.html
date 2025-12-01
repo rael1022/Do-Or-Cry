@@ -4,26 +4,135 @@
   <meta charset="UTF-8">
   <title>LoopLearn Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class' }
+  </script>
+
+  <!-- Apply saved theme early -->
+  <script>
+    if (localStorage.getItem("theme") === "dark") {
+      document.documentElement.classList.add("dark");
+    }
+  </script>
+
+  <script>
+    // Apply saved theme early
+    if (localStorage.getItem("theme") === "dark") {
+      document.documentElement.classList.add("dark");
+    }
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      const isDark = html.classList.toggle('dark');
+      localStorage.setItem("theme", isDark ? "dark" : "light");
+    }
+  </script>
+
   <style>
+    body, * {
+      font-family: 'Inter', sans-serif;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
     .cover{
         margin: 25px 80px;
+        transition: background 0.3s ease;
     }
+
     .container {
         max-width: 1200px;
         margin: 40px auto;
         padding: 30px 40px;
         background: #ffffff;
-        border-radius: 14px;
+        border-radius: 20px;
         box-shadow: 0 3px 20px rgba(0,0,0,0.06);
+        transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
     }
+
     h2 {
         font-size: 26px;
         font-weight: 600;
     }
+
+    /* DARK MODE */
+    .dark body {
+      background-color: #121212;
+      color: #EAEAEA;
+    }
+
+    .dark .cover {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(6px);
+      border-radius: 20px;
+    }
+
+    .dark .container {
+      background: rgba(30,30,30,0.85);
+      color: #EAEAEA;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+    }
+
+    .dark .history-section {
+      color: #EAEAEA;
+    }
+
+    .progress-bg {
+      background-color: #e5e7eb;
+      border-radius: 9999px;
+    }
+
+    .dark .progress-bg {
+      background-color: #2a2a2a;
+    }
+
+    .progress-bar {
+      height: 1.5rem;
+      border-radius: 9999px;
+      background-color: #6366f1;
+      text-align: center;
+      color: white;
+      line-height: 1.5rem;
+      transition: width 0.3s ease;
+    }
+
+    .dark .progress-bar {
+      background-color: #818cf8;
+      color: #121212;
+    }
+
+    .stat-box {
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+      font-weight: 600;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .stat-bg-light { background-color: #dcfce7; color: #065f46; }
+    .dark .stat-bg-light { background-color: #166534; color: #a7f3d0; }
+
+    .stat-bg-blue { background-color: #dbeafe; color: #1e3a8a; }
+    .dark .stat-bg-blue { background-color: #1e40af; color: #bfdbfe; }
+
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-bottom: 1px solid #ddd;
+      transition: background 0.3s ease;
+    }
+
+    .dark .history-item {
+      border-bottom: 1px solid #444;
+    }
+
+    .history-date { font-weight: 500; }
   </style>
 </head>
+
 <body class="bg-[#F5F5F7] dark:bg-[#121212] text-gray-900 dark:text-gray-100">
 
+<!-- Navigation Bar -->
 <nav class="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-[#1A1A1A] border-b border-gray-200 dark:border-gray-700">
   <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
     <div class="text-xl font-extrabold tracking-wide bg-gradient-to-r from-indigo-500 to-purple-500 
@@ -54,13 +163,13 @@
 
     <div class="mb-6">
       <h3 class="text-xl font-semibold mb-2">Study Progress</h3>
-      <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-6">
-        <div id="studyProgressBar" class="bg-indigo-500 h-6 rounded-full text-white text-center">0%</div>
+      <div class="progress-bg w-full h-6 rounded-full">
+        <div id="studyProgressBar" class="progress-bar">0%</div>
       </div>
     </div>
 
-    <div class="container">
-        <h1>📊 Your Quiz History</h1>
+    <div class="mb-6">
+        <h3 class="text-xl font-semibold mb-2">📊 Your Quiz History</h3>
         <div class="history-section" id="dashboardHistorySection">
             <div id="dashboardHistoryList"></div>
         </div>
@@ -71,17 +180,14 @@
       <p id="procrastType" class="p-4 bg-yellow-100 dark:bg-yellow-800 rounded shadow text-center text-lg font-medium">Unknown</p>
     </div>
 
-    <div class="mb-6">
-      <h3 class="text-xl font-semibold mb-2">Tools Statistics</h3>
-      <div class="grid grid-cols-2 gap-4">
-        <div class="p-4 bg-green-100 dark:bg-green-800 rounded shadow text-center">
-          <p>Pomodoros Completed Today</p>
-          <span id="pomodoroCount" class="text-2xl font-bold">0</span>
-        </div>
-        <div class="p-4 bg-blue-100 dark:bg-blue-800 rounded shadow text-center">
-          <p>To-dos Completed Today</p>
-          <span id="todoDoneToday" class="text-2xl font-bold">0</span>
-        </div>
+    <div class="mb-6 grid grid-cols-2 gap-4">
+      <div class="stat-box stat-bg-light">
+        <p>Pomodoros Completed Today</p>
+        <span id="pomodoroCount" class="text-2xl font-bold">0</span>
+      </div>
+      <div class="stat-box stat-bg-blue">
+        <p>To-dos Completed Today</p>
+        <span id="todoDoneToday" class="text-2xl font-bold">0</span>
       </div>
     </div>
   </div>
@@ -99,12 +205,13 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('todoDoneToday').innerText = Number(localStorage.getItem(todoKey) || 0);
 
   const studyProgress = Number(localStorage.getItem('studyProgress') || 65);
-
-  const procrastType = localStorage.getItem('procrastType') || 'Moderate Procrastinator';
-
   document.getElementById('studyProgressBar').style.width = studyProgress + '%';
   document.getElementById('studyProgressBar').innerText = studyProgress + '%';
+
+  const procrastType = localStorage.getItem('procrastType') || 'Moderate Procrastinator';
   document.getElementById('procrastType').innerText = procrastType;
+
+  displayDashboardHistory();
 });
 
 function displayDashboardHistory() {
@@ -123,7 +230,7 @@ function displayDashboardHistory() {
         div.innerHTML = `
             <div>
                 <div class="history-date">${record.date}</div>
-                <div style="font-size: 14px; color: #666; margin-top: 4px;">
+                <div style="font-size: 14px; margin-top: 4px; color: #666;" class="dark:text-gray-300">
                     ${record.correct}/${record.total} correct
                 </div>
             </div>
@@ -132,12 +239,6 @@ function displayDashboardHistory() {
         historyList.appendChild(div);
     });
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    displayDashboardHistory();
-});
-
-
 </script>
 
 </body>
