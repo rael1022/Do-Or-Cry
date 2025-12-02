@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
+<title>Login - Do or Cry</title>
+<style>
+/* Body & Theme */
+body {
+    font-family: 'Roboto', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: background 0.4s, color 0.4s;
+    position: relative;
+    background: #f5f5f7;
+    color: #111;
+}
+.dark {
+    background: #121212;
+    color: #fff;
+}
+
+/* Particle background */
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,92,92,0.4);
+    animation: float 40s linear infinite;
+    z-index: 0;
+}
+@keyframes float {
+    0% { transform: translateY(0) translateX(0); }
+    50% { transform: translateY(-50px) translateX(30px); }
+    100% { transform: translateY(0) translateX(0); }
+}
+
+/* Login Card */
+.login-card {
+    position: relative;
+    z-index: 10;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 50px 35px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    transition: background 0.3s;
+}
+.dark .login-card {
+    background: #1E1E1E;
+}
+
+/* Logo */
+.logo-wrapper {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 15px auto;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+.logo {
+    width: 60px;
+    height: 60px;
+}
+
+/* Inputs */
+.login-card input {
+    width: 100%;
+    padding: 14px;
+    margin-top: 14px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    background: #fafafa;
+    color: #111;
+    transition: background 0.3s, border-color 0.3s, color 0.3s;
+}
+.dark .login-card input {
+    background: #2A2A2A;
+    border-color: #444;
+    color: #fff;
+}
+
+/* Login Button */
+.login-btn {
+    width: 100%;
+    padding: 14px;
+    margin-top: 20px;
+    border-radius: 8px;
+    background: linear-gradient(to right, #A51C30, #FF5C5C);
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.dark .login-btn {
+    background: linear-gradient(to right, #FF5C5C, #A51C30);
+    color: #fff;
+}
+.login-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 25px rgba(255,92,92,0.5);
+}
+
+/* Slogan */
+.slogan {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 20px;
+}
+.dark .slogan {
+    color: #aaa;
+}
+
+/* Social Login */
+.social-login {
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+.social-login i {
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.2s, color 0.2s;
+    color: #555;
+}
+.dark .social-login i {
+    color: #ccc;
+}
+.social-login i:hover {
+    transform: scale(1.2);
+    color: #A51C30;
+}
+
+/* Toggle Button */
+.toggle-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #222;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: bold;
+    border: none;
+    z-index: 20;
+}
+.dark .toggle-btn {
+    background: #fff;
+    color: #111;
+}
+</style>
+</head>
+<body>
+
+<button class="toggle-btn" onclick="toggleTheme()">Toggle Mode</button>
+
+<!-- Particle Elements -->
+<script>
+// Generate multiple particles with brighter colors
+const particleColors = ['rgba(255,92,92,0.5)', 'rgba(255,182,193,0.4)', 'rgba(255,140,0,0.4)'];
+for(let i=0; i<40; i++){
+    let particle = document.createElement('div');
+    particle.classList.add('particle');
+    particle.style.width = particle.style.height = (Math.random()*20+10)+'px';
+    particle.style.left = Math.random()*100+'%';
+    particle.style.top = Math.random()*100+'%';
+    particle.style.background = particleColors[Math.floor(Math.random()*particleColors.length)];
+    particle.style.animationDuration = (20 + Math.random()*20)+'s';
+    document.body.appendChild(particle);
+}
+</script>
+
+<div class="login-card">
+    <div class="logo-wrapper">
+        <img src="images/logo.png" class="logo" alt="Logo">
+    </div>
+    <h2 class="text-2xl font-bold mb-2">Do or Cry</h2>
+    <p class="slogan">Conquer procrastination. Start taking small steps today.</p>
+    <input type="text" id="username" placeholder="Enter your username" required>
+    <input type="button" id="loginbtn" class="login-btn" value="Login">
+
+    <div class="social-login">
+        <i class="fa-brands fa-google"></i>
+        <i class="fa-brands fa-facebook-f"></i>
+        <i class="fa-brands fa-twitter"></i>
+    </div>
+</div>
+
+<script>
+function toggleTheme() {
+    document.body.classList.toggle('dark');
+}
+
+document.getElementById("loginbtn").addEventListener("click", function() {
+    let username = document.getElementById("username").value;
+    if(username.trim() !== "") {
+        localStorage.setItem("username", username);
+        window.location.href = "home.html";
+    } else {
+        alert("Please enter a username!");
+    }
+});
+</script>
+</body>
+</html>
