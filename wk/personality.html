@@ -181,9 +181,45 @@
     <div class="cover">
         <div class="container">
             <h1 style="font-size: 45px;">Personality Test</h1>
+            <p class="lead">Rate each statement from <strong>1 (Strongly Disagree)</strong> to <strong>5 (Strongly Agree)</strong>. After submitting you'll see your primary and secondary procrastination types and brief advice.</p>
+
+            <form id="quizForm" class="card" onsubmit="return handleSubmit(event)">
+                <!-- Questions 1 - 20 -->
+                 <div id="questions"></div>
+                
+                 <div class="actions">
+                    <button type="submit">Get Results</button>
+                    <button type="button" class="secondary" onclick="resetForm()">Reset</button>
+                    <div style="margin-left:auto"><small>Save your result: press Get Result then copy the summary.</small></div>
+                 </div>
+            </form>
         </div>
     </div>
 
+<script>
+    const questions = [
+        "I avoid starting tasks because I’m afraid I might do them wrongly.",
+        "I delay tasks because I feel they are not perfect enough to begin.",
+        "I start projects with excitement but lose interest halfway.",
+        "I feel overwhelmed when a task seems too big.",
+        "I usually start tasks only when the deadline is extremely close.",
+        "I get easily distracted by my phone, social media, or entertainment.",
+        "I worry about being judged for not performing well.",
+        "I spend too much time researching or planning instead of starting.",
+        "I find it hard to stick to one idea and complete it.",
+        "I freeze or feel stuck when I don’t know the first step.",
+        "I believe I work better under pressure and tight deadlines.",
+        "I jump between tasks because I cannot focus on one thing.",
+        "I avoid tasks that might highlight my weaknesses.",
+        "I double-check or redo small details too many times before moving on.",
+        "I get bored quickly unless the task is exciting or new.",
+        "I avoid tasks when they feel too confusing or unclear.",
+        "I feel more energetic and productive when the deadline is near.",
+        "I often waste time scrolling or watching videos instead of working.",
+        "I hesitate to start tasks until I’m 'in the mood.'",
+        "I find it hard to concentrate on tasks for long periods."    
+    ];
+</script>
 <script>
     const username = localStorage.getItem("username") || "User";
     if(document.getElementById("username")){

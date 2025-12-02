@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Procrastination Personality Quiz (20 Questions)</title>
+  <style>
+    :root{--bg:#f7f8fb;--card:#ffffff;--accent:#2b6cb0;--muted:#6b7280}
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;line-height:1.45;background:var(--bg);color:#111;margin:0;padding:24px}
+    .container{max-width:880px;margin:0 auto}
+    header{display:flex;align-items:center;gap:16px}
+    h1{margin:0;font-size:1.6rem}
+    p.lead{margin:8px 0 20px;color:var(--muted)}
+    .card{background:var(--card);border-radius:12px;padding:20px;box-shadow:0 6px 18px rgba(13,24,40,0.06);margin-bottom:16px}
+    .question{margin-bottom:14px}
+    .q-title{font-weight:600;margin-bottom:6px}
+    .scale{display:flex;gap:8px}
+    .scale label{flex:1;text-align:center;background:#f3f4f6;padding:10px;border-radius:8px;cursor:pointer;border:1px solid transparent}
+    input[type="radio"]{display:none}
+    input[type="radio"]:checked + label{background:linear-gradient(180deg,#e6f0ff,#dbeeff);border-color:var(--accent);box-shadow:0 2px 6px rgba(43,108,176,0.12)}
+    .actions{display:flex;gap:10px;align-items:center}
+    button{background:var(--accent);color:#fff;border:none;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:600}
+    button.secondary{background:#e6eefc;color:var(--accent);border:1px solid rgba(43,108,176,0.15)}
+    .results{margin-top:18px}
+    .result-type{background:#fff8e6;border:1px solid #ffe7b5;padding:12px;border-radius:8px;margin-bottom:8px}
+    small{color:var(--muted)}
+    footer{margin-top:18px;color:var(--muted);font-size:0.9rem}
+    @media (max-width:640px){.scale label{padding:8px;font-size:13px}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Procrastination Personality Quiz (20 questions)</h1>
+    </header>
+    <p class="lead">Rate each statement from <strong>1 (Strongly Disagree)</strong> to <strong>5 (Strongly Agree)</strong>. After submitting you'll see your primary and secondary procrastination types and brief advice.</p>
+
+    <form id="quizForm" class="card" onsubmit="return handleSubmit(event)">
+
+      <!-- Questions 1 - 20 -->
+      <div id="questions"></div>
+
+      <div class="actions">
+        <button type="submit">Get Results</button>
+        <button type="button" class="secondary" onclick="resetForm()">Reset</button>
+        <div style="margin-left:auto"><small>Save your results: press Get Results then copy the summary.</small></div>
+      </div>
+
+      <div id="resultArea" class="results" aria-live="polite"></div>
+    </form>
+
+    <footer>
+      <small>Created for self-reflection and classroom use — not a clinical assessment.</small>
+    </footer>
+  </div>
+
+  <script>
+    const questions = [
+      "I avoid starting tasks because I’m afraid I might do them wrongly.",
+      "I delay tasks because I feel they are not perfect enough to begin.",
+      "I start projects with excitement but lose interest halfway.",
+      "I feel overwhelmed when a task seems too big.",
+      "I usually start tasks only when the deadline is extremely close.",
+      "I get easily distracted by my phone, social media, or entertainment.",
+      "I worry about being judged for not performing well.",
+      "I spend too much time researching or planning instead of starting.",
+      "I find it hard to stick to one idea and complete it.",
+      "I freeze or feel stuck when I don’t know the first step.",
+      "I believe I work better under pressure and tight deadlines.",
+      "I jump between tasks because I cannot focus on one thing.",
+      "I avoid tasks that might highlight my weaknesses.",
+      "I double-check or redo small details too many times before moving on.",
+      "I get bored quickly unless the task is exciting or new.",
+      "I avoid tasks when they feel too confusing or unclear.",
+      "I feel more energetic and productive when the deadline is near.",
+      "I often waste time scrolling or watching videos instead of working.",
+      "I hesitate to start tasks until I’m 'in the mood.'",
+      "I find it hard to concentrate on tasks for long periods."
+    ];
+
+    // Groups mapping (questions are 1-indexed in design)
+    const groups = {
+      Avoider: [1,7,13,19],
+      Perfectionist: [2,8,14],
+      Dreamer: [3,9,15],
+      Overwhelmed: [4,10,16],
+      CrisisMaker: [5,11,17],
+      Distracted: [6,12,18,20]
+    };
+
+    function renderQuestions(){
+      const container = document.getElementById('questions');
+      questions.forEach((q, i) => {
+        const idx = i+1;
+        const div = document.createElement('div');
+        div.className = 'question';
+        div.innerHTML = `
+          <div class="q-title">${idx}. ${escapeHtml(q)}</div>
+          <div class="scale" role="radiogroup" aria-labelledby="q${idx}">
+            ${[1,2,3,4,5].map(v => `
+              <input type="radio" id="q${idx}v${v}" name="q${idx}" value="${v}">
+              <label for="q${idx}v${v}">${v}</label>
+            `).join('')}
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function escapeHtml(s){return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"})[c])}
+
+    function handleSubmit(e){
+      e.preventDefault();
+      const answers = {};
+      let allAnswered = true;
+      for(let i=1;i<=questions.length;i++){
+        const val = document.querySelector(`input[name=q${i}]:checked`);
+        if(!val){ allAnswered = false; break }
+        answers[i] = parseInt(val.value,10);
+      }
+      if(!allAnswered){
+        showMessage('Please answer all questions (select 1–5 for each).');
+        return false;
+      }
+
+      // Sum scores per group
+      const totals = {};
+      for(const [type, idxs] of Object.entries(groups)){
+        totals[type] = idxs.reduce((s, qIdx) => s + (answers[qIdx] || 0), 0);
+      }
+
+      // Determine primary and secondary
+      const sorted = Object.entries(totals).sort((a,b)=>b[1]-a[1]);
+      const primary = sorted[0];
+      const secondary = sorted[1];
+
+      displayResults(totals, primary, secondary);
+      return false;
+    }
+
+    function displayResults(totals, primary, secondary){
+      const area = document.getElementById('resultArea');
+      area.innerHTML = '';
+
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      const h = document.createElement('h2');
+      h.textContent = 'Your Results';
+      h.style.marginTop = 0;
+      card.appendChild(h);
+
+      const p = document.createElement('p');
+      p.innerHTML = `<strong>Primary type:</strong> ${primary[0]} — <em>score ${primary[1]}</em><br><strong>Secondary type:</strong> ${secondary[0]} — <em>score ${secondary[1]}</em>`;
+      card.appendChild(p);
+
+      // Explanations
+      const explanations = {
+        Avoider: 'You postpone tasks because of fear — fear of mistakes, judgment, or failure. Strategies: start with tiny low-risk steps, practice self-compassion, set very small time-limited starts (5–10 minutes).',
+        Perfectionist: 'You delay by overplanning and aiming for flawless results. Strategies: set "good enough" standards, limit revision rounds, use deadlines for drafts.',
+        Dreamer: 'You love ideas and creativity but struggle with consistency and finishing. Strategies: break tasks into concrete next-steps, use accountability, schedule short focused sessions.',
+        Overwhelmed: 'Tasks feel too big, complex, or unclear and you freeze. Strategies: chunk the task, make a simple checklist of first three steps, ask for help or clarify requirements.',
+        CrisisMaker: 'You rely on pressure and urgency to perform. Strategies: simulate mini-deadlines, use timers (Pomodoro), create artificial checkpoints before the real deadline.',
+        Distracted: 'You want to work but are pulled away by distractions (phone, apps). Strategies: remove distractions, use focus-blocks, enable do-not-disturb, and use single-tasking techniques.'
+      };
+
+      const exp = document.createElement('div');
+      exp.className = 'result-type';
+      exp.innerHTML = `<strong>${primary[0]}</strong><p style="margin:8px 0">${escapeHtml(explanations[primary[0]])}</p>`;
+      card.appendChild(exp);
+
+      const breakdown = document.createElement('div');
+      breakdown.innerHTML = `<h3>Scores breakdown</h3><ul>${Object.entries(totals).map(([k,v])=>`<li><strong>${k}:</strong> ${v}</li>`).join('')}</ul>`;
+      card.appendChild(breakdown);
+
+      const note = document.createElement('p');
+      note.innerHTML = '<small>Tip: Your secondary type may explain mixed behaviours. Use the strategies above combined with small experiments to change habits.</small>';
+      card.appendChild(note);
+
+      area.appendChild(card);
+      area.scrollIntoView({behavior: 'smooth'});
+    }
+
+    function showMessage(msg){
+      const area = document.getElementById('resultArea');
+      area.innerHTML = `<div class="card"><strong>${msg}</strong></div>`;
+      area.scrollIntoView({behavior:'smooth'});
+    }
+
+    function resetForm(){
+      document.getElementById('quizForm').reset();
+      document.getElementById('resultArea').innerHTML = '';
+    }
+
+    // Initialize
+    renderQuestions();
+  </script>
+</body>
+</html>
