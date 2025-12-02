@@ -4,29 +4,35 @@
     <meta charset="UTF-8">
     <title>Personality Page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!--FontAwesome-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!--Tailwind-->
     <script src="https://cdn.tailwindcss.com"></script>
-
     <script>
-        // change Light / Dark Mode
-        function toggleTheme(){
-            const html = document.documentElement;
-            html.classList.toggle('dark');
+        tailwind.config = { darkMode: 'class' }
+    </script>
+
+    <!--Apply saved theme early-->
+    <script>
+        if (localStorage.getItem("theme") === "dark") {
+            document.documentElement.classList.add("dark");
         }
     </script>
+
+    <!--Google Font: Inter-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
+        /*Global font*/
+        body,*{
+            font-family:'Inter', sans-serif;
+        }
         .cover{
             margin: 25px 80px;
-        }
-        /* ----- CONTENT ----- */
-        .container{
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 30px 40px;
-            background: #ffffff;
-            border-radius: 14px;
-            box-shadow: 0 3px 20px rgba(0,0,0,0.06);
         }
         h1{
             font-size: 40px;
@@ -36,6 +42,15 @@
             text-align: center;
             text-shadow: 1px 2px 4px rgba(0,0,0,0.15);
             letter-spacing: 5px;
+        }
+        /* ----- CONTENT ----- */
+        .container{
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 30px 40px;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 3px 20px rgba(0,0,0,0.06);
         }
         .card-grid{
             display: grid;
@@ -76,16 +91,53 @@
             font-weight: 500;
             color: #333;
         }
+        /*dark mode*/
+        .dark .cover{
+            background: transparent;
+        }
+        .dark .container{
+            background: #1E1E1E;
+            color: #EAEAEA;
+        }
+        /*Final Dark Mode Card Styles*/
+        .dark .card{
+            background: rgba(30,30,30,0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .dark .card:hover{
+            transform: translateY(-5px);
+            border-color: rgba(200,200,255,0.25);
+            box-shadow: 0 0 20px rgba(120,120,255,0.18);
+        }
+
+        .dark .card-content{
+            color: #F5F5F5;
+        }
+
+        .dark h1{
+            color: #A5B4FC; /*nice soft purple*/
+        }
     </style>
 </head>
 
 <body class="bg-[#F5F5F7] dark:bg-[#121212] text-grey-900 dark:text-gray-100">
+    
     <!--Navgation Bar-->
     <nav class="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-[#1A1A1A] border-b border gray-200 dark:border-gray-700">
         <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-            <!--Logo with Gradient Hover-->
-            <div class="text-xl font-extrabold tracking-wide bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent transition duration-300 transform hover:scale-105 hover:from-pink-500 hover:to-yellow-500">Do or Cry</div>
-            <!--Navigation Links with Hover Gradient-->
+            
+            <!--Logo-->
+            <div class="text-xl font-extrabold tracking-wide 
+                        bg-gradient-to-r from-indigo-500 to-purple-500 
+                        bg-clip-text text-transparent 
+                        transition duration-300 transform 
+                        hover:scale-105 hover:from-pink-500 hover:to-yellow-500">
+                Do or Cry
+            </div>
+            
+            <!--Navigation-->
             <div class="flex items-center space-x-6">
                 <a href="home.html" 
                     class="font-medium transition duration-300 
@@ -110,9 +162,12 @@
                 </a>
 
                 <!--Theme Button-->
-                <button onclick="toggleTheme()" class="p2 rounded-full bg-gradient-to-r from-purple-600 to-blue-500 text-white dark:text-black transition duration-500 transform hover:scale-125 hover:rotate-180 hover:shadow-[0_0_12px_rgba(139,92,246,0.6)]">
+                <button onclick="toggleTheme()" 
+                    class="p-2 rounded-full bg-gradient-to-r from-purple-600 to-blue-500
+                            text-white dark:text-black
+                            transition duration-500 transform hover:scale-125 hover:rotate-180 hover:shadow-[0_0_12px_rgba(139,92,246,0.6)]">
                     <span class="dark:hidden">🌙</span>
-                    <span class="hidden dark:inline">☀️</span>
+                    <span class="hidden dark:inline">☀</span>
                 </button>
             </div>
         </div>
@@ -120,8 +175,8 @@
 
     <!--Prevent content hidden behind the navbar-->
     <div class="h-16"></div>
+    <div class="h-16"></div>
 
-    <!-- Personality Page  Container -->
     <!--Main Area-->
     <div class="cover">
         <div class="container">
