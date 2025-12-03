@@ -11,4 +11,4 @@ This project includes:
 ## How to run
 1. cd backend
 2. node server.js
-3. go to home.html open with live server
+3. go to login.html open with live server
