@@ -6,9 +6,13 @@ This project includes:
 
 ## Setup
 1. Install node.js
-2. Add your OpenAI API Key in 'server.js' on line 9, const API_KEY = "YOUR_OPENAI_KEY_HERE";
+2. Add your OpenAI API Key in 'backend/server.js' on line 9, const API_KEY = "YOUR_OPENAI_KEY_HERE";
 
 ## How to run
-1. cd backend
-2. node server.js
-3. go to login.html open with live server
+1. Start Backend Server
+    1. cd backend
+    2. npm install
+    3. node server.js
+
+2. Start the Frontend
+    1. Open frontend folder and right click login.html -> Open with Live Server
