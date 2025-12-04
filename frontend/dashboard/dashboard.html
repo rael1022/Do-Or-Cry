@@ -225,7 +225,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const todoKey = `todoDone_${username}_${today}`;
   document.getElementById('todoDoneToday').innerText = Number(localStorage.getItem(todoKey) || 0);
 
-  const studyProgress = Number(localStorage.getItem('studyProgress') || 65);
+  const studyProgress = Number(localStorage.getItem('studyProgress') || 0);
   document.getElementById('studyProgressBar').style.width = studyProgress + '%';
   document.getElementById('studyProgressBar').innerText = studyProgress + '%';
 
