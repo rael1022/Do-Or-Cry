@@ -33,20 +33,71 @@
       font-family: 'Inter', sans-serif;
     }
 
-    .cover{
-        margin: 25px 80px;
-    }
-    h1 {
-        font-size: 40px;          
-        font-weight: 900;        
-        margin-bottom: 10px;
-        color: #4F46E5;           
-        text-align: left;        
-        text-shadow: 1px 2px 4px rgba(0,0,0,0.15); 
-        letter-spacing: 5px;      
+    .cover {
+        margin: 60px 50px;
+        padding: 0 20px;
     }
 
-    /* ----- CONTENT ----- */
+    .tool-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 100px;
+        margin-top: 20px;
+    }
+
+    .tool-card {
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 25px;
+        text-align: center;
+        box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+        transition: 0.25s;
+        cursor: pointer;
+    }
+    .tool-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    .icon-area {
+        width: 75px;
+        height: 75px;
+        margin: 0 auto 15px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        color: white;
+    }
+
+    .tool-card h3 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .tool-card p {
+        font-size: 0.95rem;
+        color: #555;
+    }
+
+    /* DARK MODE */
+    .dark .tool-card {
+        background: rgba(30,30,30,0.55);
+        border: 1px solid rgba(255,255,255,0.08);
+        box-shadow: none;
+    }
+
+    .dark .tool-card:hover {
+        border-color: rgba(200,200,255,0.25);
+        box-shadow: 0 0 18px rgba(140,140,255,0.18);
+    }
+
+    .dark .tool-card p {
+        color: #ccc;
+    }
+
     .container {
         max-width: 1200px;
         margin: 40px auto;
@@ -56,77 +107,10 @@
         box-shadow: 0 3px 20px rgba(0,0,0,0.06);
     }
 
-    .card-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
-        gap: 50px;
-        margin-top: 25px;
-    }
-
-    .card {
-        background: #ffffff;
-        border-radius: 14px;
-        overflow: hidden;
-        box-shadow: 0 3px 15px rgba(0,0,0,0.08);
-        cursor: pointer;
-        transition: 0.25s;
-    }
-    .card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-    }
-
-    .card-banner {
-        height: 140px;
-        width: 100%;
-        background-size: cover;
-        background-position: center;
-    }
-
-    .c1 { background: linear-gradient(130deg, #b5c4d4, #d7dce0); }
-    .c2 { background: linear-gradient(130deg, #3f3ec2, #8366e6); }
-    .c3 { background: linear-gradient(130deg, #bfc2c7, #e0e0e0); }
-
-    .card-content {
-        padding: 18px;
-        font-weight: 500;
-        color: #333;
-    }
-
-    /* -----------------------------------------------------
-       DARK MODE IMPROVEMENT (only additions, no changes)
-       ----------------------------------------------------- */
-    .dark .cover {
-      background: transparent;
-    }
-
     .dark .container {
-      background: #1E1E1E;
-      color: #EAEAEA;
+        background: #1E1E1E;
+        color: #EAEAEA;
     }
-    /* FINAL DARK MODE CARD STYLE */
-    .dark .card {
-      background: rgba(30, 30, 30, 0.6);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-
-    .dark .card:hover {
-      transform: translateY(-5px);
-      border-color: rgba(200, 200, 255, 0.25);
-      box-shadow: 0 0 20px rgba(120, 120, 255, 0.18);
-    }
-
-
-    .dark .card-content {
-      color: #F5F5F5;
-    }
-
-    .dark h1 {
-      color: #A5B4FC;  /* nice soft purple */
-    }
-
   </style>
 </head>
 
@@ -182,24 +166,44 @@
 <!-- MAIN AREA -->
 <div class="cover">
   <div class="container">
-    <h1 style="font-size: 45px;">Study Assistant</h1>
 
-    <div class="card-grid">
-        <div class="card" onclick="navigateTo('pomodoro_timer.html')">
-            <div class="card-banner c1"></div>
-            <div class="card-content">Pomodoro Timer <i style="font-size:24px" class="fa">&#xf017;</i></div>
-        </div>
-
-        <div class="card" onclick="navigateTo('taskwheel.html')">
-            <div class="card-banner c2"></div>
-            <div class="card-content">Task Wheel <i class="fas fa-tasks"></i></div>
-        </div>
-
-        <div class="card" onclick="navigateTo('todolist.html')">
-            <div class="card-banner c3"></div>
-            <div class="card-content">To-Do-List</div>
-        </div>
+    <div class="flex flex-col md:flex-row items-center justify-between mb-10">
+      <div>
+        <h1 class="text-5xl font-extrabold mb-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-transparent bg-clip-text">
+          Study Assistant
+        </h1>
+        <p class="text-gray-600 dark:text-gray-300 text-lg">
+          Boost your productivity with smart study tools.
+        </p>
+      </div>
     </div>
+
+    <div class="tool-grid">
+      <div class="tool-card" onclick="navigateTo('pomodoro_timer.html')">
+        <div class="icon-area bg-gradient-to-r from-indigo-400 to-purple-400">
+          <i class="fa fa-clock-o"></i>
+        </div>
+        <h3>Pomodoro Timer</h3>
+        <p>Focus with structured time intervals.</p>
+      </div>
+
+      <div class="tool-card" onclick="navigateTo('taskwheel.html')">
+        <div class="icon-area bg-gradient-to-r from-pink-500 to-yellow-500">
+          <i class="fas fa-tasks"></i>
+        </div>
+        <h3>Task Wheel</h3>
+        <p>Spin the wheel and pick your next task.</p>
+      </div>
+
+      <div class="tool-card" onclick="navigateTo('todolist.html')">
+        <div class="icon-area bg-gradient-to-r from-blue-400 to-teal-400">
+          <i class="fas fa-list-check"></i>
+        </div>
+        <h3>To-Do List</h3>
+        <p>Organize your day with a simple checklist.</p>
+      </div>
+    </div>
+
   </div>
 </div>
 
