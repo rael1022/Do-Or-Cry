@@ -1,5 +1,8 @@
-# 🧠 Do or Cry – Procrastination Helper with AI Chat
+<p align="center">
+  <img src="images/logo.png" alt="Do or Cry Logo" width="120" height="120">
+</p>
 
+<h1 align="center">Do or Cry – Procrastination Helper with AI Chat</h1>
 Do or Cry is a web-based procrastination management platform designed to help users overcome procrastination and build better habits. The website combines learning content, quizzes, personality analysis, productivity tools, and an AI chat companion to support users in staying motivated and productive.
 
 By focusing on small, consistent actions, Do or Cry encourages users to understand their habits, track progress, and improve self-discipline in a fun and interactive way.
