@@ -44,7 +44,7 @@ By focusing on small, consistent actions, Do or Cry encourages users to understa
 ---
 
 ### 🧠 Personality Test Page
-- 10–15 multiple-choice questions
+- 20 Likert-scale questions (1–5, Strongly Disagree → Strongly Agree)
 - Automatic score calculation
 - Procrastination personality analysis
 - Results saved in `localStorage`
