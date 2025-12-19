@@ -106,7 +106,7 @@ Displays user progress and statistics, including:
 ## ⚙️ Setup
 
 ### Prerequisites
-- Node.js
+- Node.js v18.0.0 or above
 - A valid OpenAI API key 
 
 ---
