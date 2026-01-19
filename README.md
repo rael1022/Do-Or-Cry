@@ -3,7 +3,7 @@
 </p>
 
 <h1 align="center">Do or Cry – Procrastination Helper with AI Chat</h1>
-Do or Cry is a web-based procrastination management platform developed as a project for the Fundamentals of Digital Competence for Programmers course.
+Do or Cry is a web-based procrastination management platform developed as a project for the <b>Fundamentals of Digital Competence for Programmers</b> course.
 The system aims to help users understand procrastination, build productive habits, and stay motivated through interactive learning, self-assessment, productivity tools, and an AI chat companion.
 
 The platform encourages users to take small, consistent actions by combining educational content, quizzes, personality analysis, progress tracking, and conversational AI support.
